@@ -1,0 +1,29 @@
+{
+  "version": "0.1.0-alpha1",
+  "description": "Unit tests for the Openchain.MongoDb package.",
+  "authors": [ "Frédéric Luce" ],
+  "owners": [ "Frédéric Luce" ],
+  "projectUrl": "https://github.com/openchain/mongodb-storage",
+  "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+  "iconUrl": "https://www.openchain.org/package.png",
+  "copyright": "Copyright © 2016",
+
+  "dependencies": {
+    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
+    "Openchain.Abstractions.Tests": "0.5.0-rc1-*",
+    "Openchain.Infrastructure.Tests": "0.5.0-rc1-*",
+    "xunit": "2.1.0",
+    "xunit.runner.dnx": "2.1.0-rc1-*",
+    "Openchain.MongoDb": ""
+  },
+
+  "commands": {
+    "test": "xunit.runner.dnx"
+  },
+
+  "frameworks": {
+    "dnx451": {
+    }
+  }
+}
