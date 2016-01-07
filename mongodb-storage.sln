@@ -18,13 +18,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Abstractions", "..\openchain\src\Openchain.Abstractions\Openchain.Abstractions.xproj", "{CA9A2FB3-5BB1-4730-A65E-16BD9831F303}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Abstractions", "openchain\src\Openchain.Abstractions\Openchain.Abstractions.xproj", "{CA9A2FB3-5BB1-4730-A65E-16BD9831F303}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Infrastructure", "..\openchain\src\Openchain.Infrastructure\Openchain.Infrastructure.xproj", "{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Anchoring.Blockchain", "openchain\src\Openchain.Anchoring.Blockchain\Openchain.Anchoring.Blockchain.xproj", "{B392C570-EFCC-4684-B7D8-0A645B49EAED}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Abstractions.Tests", "..\openchain\test\Openchain.Abstractions.Tests\Openchain.Abstractions.Tests.xproj", "{38A38DEF-1B86-495E-8674-2AA135CE016A}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Infrastructure", "openchain\src\Openchain.Infrastructure\Openchain.Infrastructure.xproj", "{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Infrastructure.Tests", "..\openchain\test\Openchain.Infrastructure.Tests\Openchain.Infrastructure.Tests.xproj", "{91B5C8B9-602C-4843-A2BE-DA82B3F7449B}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Server", "openchain\src\Openchain.Server\Openchain.Server.xproj", "{C24C1145-878A-476A-AC93-6A272BE3D139}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Validation.PermissionBased", "openchain\src\Openchain.Validation.PermissionBased\Openchain.Validation.PermissionBased.xproj", "{3BA6CCC3-432A-4B3E-8D46-5E48A2F44DA3}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Abstractions.Tests", "openchain\test\Openchain.Abstractions.Tests\Openchain.Abstractions.Tests.xproj", "{38A38DEF-1B86-495E-8674-2AA135CE016A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Openchain.Infrastructure.Tests", "openchain\test\Openchain.Infrastructure.Tests\Openchain.Infrastructure.Tests.xproj", "{91B5C8B9-602C-4843-A2BE-DA82B3F7449B}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Run", "src\Run\Run.xproj", "{4E681F58-48D8-4F63-9CDA-FB1D4E584F84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +52,22 @@ Global
 		{CA9A2FB3-5BB1-4730-A65E-16BD9831F303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA9A2FB3-5BB1-4730-A65E-16BD9831F303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA9A2FB3-5BB1-4730-A65E-16BD9831F303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B392C570-EFCC-4684-B7D8-0A645B49EAED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B392C570-EFCC-4684-B7D8-0A645B49EAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B392C570-EFCC-4684-B7D8-0A645B49EAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B392C570-EFCC-4684-B7D8-0A645B49EAED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C24C1145-878A-476A-AC93-6A272BE3D139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C24C1145-878A-476A-AC93-6A272BE3D139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C24C1145-878A-476A-AC93-6A272BE3D139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C24C1145-878A-476A-AC93-6A272BE3D139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BA6CCC3-432A-4B3E-8D46-5E48A2F44DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BA6CCC3-432A-4B3E-8D46-5E48A2F44DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BA6CCC3-432A-4B3E-8D46-5E48A2F44DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BA6CCC3-432A-4B3E-8D46-5E48A2F44DA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38A38DEF-1B86-495E-8674-2AA135CE016A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38A38DEF-1B86-495E-8674-2AA135CE016A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38A38DEF-1B86-495E-8674-2AA135CE016A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,6 +76,10 @@ Global
 		{91B5C8B9-602C-4843-A2BE-DA82B3F7449B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91B5C8B9-602C-4843-A2BE-DA82B3F7449B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91B5C8B9-602C-4843-A2BE-DA82B3F7449B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E681F58-48D8-4F63-9CDA-FB1D4E584F84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E681F58-48D8-4F63-9CDA-FB1D4E584F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E681F58-48D8-4F63-9CDA-FB1D4E584F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E681F58-48D8-4F63-9CDA-FB1D4E584F84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,5 +87,13 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D4652647-234B-4B32-935F-3E192C1E7401} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
 		{F4804AFC-37F3-4A63-8363-BB72881E5AE7} = {7D782A1D-9A04-4A20-B995-34A77159C4BA}
+		{CA9A2FB3-5BB1-4730-A65E-16BD9831F303} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
+		{B392C570-EFCC-4684-B7D8-0A645B49EAED} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
+		{F348FDBD-8D12-4CD7-B55B-2E52FCFA8C71} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
+		{C24C1145-878A-476A-AC93-6A272BE3D139} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
+		{3BA6CCC3-432A-4B3E-8D46-5E48A2F44DA3} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
+		{38A38DEF-1B86-495E-8674-2AA135CE016A} = {7D782A1D-9A04-4A20-B995-34A77159C4BA}
+		{91B5C8B9-602C-4843-A2BE-DA82B3F7449B} = {7D782A1D-9A04-4A20-B995-34A77159C4BA}
+		{4E681F58-48D8-4F63-9CDA-FB1D4E584F84} = {37A24461-57B4-4374-9A7F-F19D2D937EEF}
 	EndGlobalSection
 EndGlobal
