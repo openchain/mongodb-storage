@@ -43,7 +43,7 @@ It implements Records & Transactions storage and Anchors storage.
 
     ```json
     "storage": {
-        "provider": "MongoDb"
+        "provider": "MongoDb",
         "connection_string": "mongodb://localhost",
         "database": "openchain"
     },
@@ -56,9 +56,9 @@ It implements Records & Transactions storage and Anchors storage.
 
     ```json
     "anchoring": {
-        ...
+        //...
         "storage": {
-            "provider": "MongoDb"
+            "provider": "MongoDb",
             "connection_string": "mongodb://localhost",
             "database": "openchain"
         }
