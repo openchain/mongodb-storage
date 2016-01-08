@@ -1,0 +1,3 @@
+[submodule "openchain"]
+	path = openchain
+	url = https://github.com/openchain/openchain.git
