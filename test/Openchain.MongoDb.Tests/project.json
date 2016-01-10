@@ -11,8 +11,8 @@
   "dependencies": {
     "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
-    "Openchain.Abstractions.Tests": "0.5.0-rc1-*",
-    "Openchain.Infrastructure.Tests": "0.5.0-rc1-*",
+    "Openchain.Abstractions.Tests": "0.5.0-*",
+    "Openchain.Infrastructure.Tests": "0.5.0-*",
     "xunit": "2.1.0",
     "xunit.runner.dnx": "2.1.0-rc1-*",
     "Openchain.MongoDb": ""
@@ -23,7 +23,7 @@
   },
 
   "frameworks": {
-    "dnx451": {
+    "dnx452": {
     }
   }
 }

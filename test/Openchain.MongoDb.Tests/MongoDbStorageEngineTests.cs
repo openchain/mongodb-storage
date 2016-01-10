@@ -13,14 +13,19 @@
 using Openchain.Tests;
 using System;
 using MongoDB.Driver;
+using Xunit.Abstractions;
 
 namespace Openchain.MongoDb.Tests
 {
     public class MongoDbStorageEngineTests : BaseStorageEngineTests
     {
-        public MongoDbStorageEngineTests()
+        ITestOutputHelper Output { get; }
+
+        public MongoDbStorageEngineTests(ITestOutputHelper output)
         {
-            var logger = new Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider((x,y)=>true, true).CreateLogger("Test");
+            Output = output;
+            var logger = new Logger() { Output = output };
+            //var logger = new Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider((x,y)=>true, true).CreateLogger("Test");
             var store = new MongoDbStorageEngine(
                             new MongoDbStorageEngineConfiguration {
                                 ConnectionString="mongodb://localhost",

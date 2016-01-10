@@ -71,6 +71,9 @@ namespace Openchain.MongoDb
                     Mutation mutation = MessageSerializer.DeserializeMutation(transaction.Mutation);
                     List<byte[]> records = new List<byte[]>();
 
+#if DEBUG
+                    Logger.LogDebug($"Add transaction {new ByteString(transactionHash)} token {new ByteString(lockToken)}");
+#endif 
                     transactionHashes.Add(transactionHash);
 
                     // add pending transaction
@@ -183,11 +186,23 @@ namespace Openchain.MongoDb
                 {
                     await PendingTransactionCollection.DeleteOneAsync(x => x.TransactionHash.Equals(hash));
                 }
-            } catch (Exception ex1)
+
+#if DEBUG
+                Logger.LogDebug($"Transaction committed token {new ByteString(lockToken)}");
+#endif
+            }
+            catch (Exception ex1)
             {
+#if DEBUG
+                Logger.LogDebug($"Error committing transaction batch {ex1.Message} token {new ByteString(lockToken)}");
+#endif
                 foreach (var hash in transactionHashes)
                 {
-                    try {
+#if DEBUG
+                    Logger.LogDebug($"Rollbacking transaction 0 {new ByteString(hash)}");
+#endif
+                    try
+                    {
                         await RollbackTransaction(hash);
                     } catch (Exception ex2)
                     {
@@ -220,7 +235,14 @@ namespace Openchain.MongoDb
                         .Set(x => x.TransactionLock, lockToken)
                 );
                 if (res == null)
-                    throw new ConcurrentMutationException(r);
+                {
+                    var e = new ConcurrentMutationException(r);
+                    e.Data["ExceptionType"] = "LockRecord";
+                    throw e;
+                }
+#if DEBUG
+                Logger.LogDebug($"Locked token {new ByteString(lockToken)} {r.Key.ToString()}");
+#endif
                 return res;
             }
             return null;
@@ -235,21 +257,29 @@ namespace Openchain.MongoDb
                     .Unset(x => x.TransactionLock)
             );
             if (res.ModifiedCount != 1 || res.MatchedCount != 1)
-                throw new ConcurrentMutationException(r);
+            {
+                var e = new ConcurrentMutationException(r);
+                e.Data["ExceptionType"] = "UnlockRecord";
+                throw e;
+            }
+#if DEBUG
+            Logger.LogDebug($"Unlocked token {new ByteString(lockToken)} {r.Key.ToString()}");
+#endif
         }
-        
+
         private async Task RollbackTransaction(byte[] hash)
         {
             // Rollback is idempotent && reentrant : may be call twice even at the same time
             try
             {
+#if DEBUG
+                Logger.LogDebug($"Rollbacking transaction {new ByteString(hash)}");
+#endif
                 // get affected records
                 var trn = await PendingTransactionCollection.Find(x => x.TransactionHash.Equals(hash)).SingleOrDefaultAsync();
 
                 if (trn != null)
                 {
-                    Logger.LogInformation($"Rollbacking transaction {new ByteString(hash)}");
-
                     // revert records values & version
                     foreach (var r in trn.InitialRecords)
                     {
@@ -268,6 +298,12 @@ namespace Openchain.MongoDb
 
                     // remove transaction
                     await TransactionCollection.DeleteOneAsync(x => x.TransactionHash.Equals(hash));
+
+                    await RecordCollection.UpdateOneAsync(
+                        x => x.TransactionLock == trn.LockToken,
+                        Builders<MongoDbRecord>.Update
+                            .Unset(x => x.TransactionLock)
+                    );
 
                     // remove pending transaction
                     await PendingTransactionCollection.DeleteOneAsync(x => x.TransactionHash.Equals(hash));
@@ -296,30 +332,40 @@ namespace Openchain.MongoDb
         public async Task<IReadOnlyList<Record>> GetRecords(IEnumerable<ByteString> keys)
         {
             var list = new List<Record>();
+
             foreach (var k in keys)
             {
                 var replay = false;
                 var retryCount = Configuration.ReadRetryCount;
+                var delay = Configuration.ReadLoopDelay;
                 do
                 {
                     var cmpkey = k.ToByteArray();
                     var r = await RecordCollection.Find(x => x.Key == cmpkey).FirstOrDefaultAsync();
                     if (r == null)
+                    {
                         list.Add(new Record(k, ByteString.Empty, ByteString.Empty));
+                        replay = false;
+                    }
                     else
                     {
                         // retry
                         if (r.TransactionLock != null)
                         {
-                            if (retryCount <= 0)
+                            if (retryCount <= 0) 
                                 throw new Exception("Lock timeout reading record " + cmpkey.ToString());
-                            await Task.Delay(Configuration.ReadLoopDelay);
+#if DEBUG
+                            Logger.LogDebug($"Waiting token {new ByteString(r.TransactionLock)} {k.ToString()} {retryCount}");
+#endif
+                            await Task.Delay(delay);
+                            delay = TimeSpan.FromMilliseconds(delay.TotalMilliseconds * 1.5);
                             replay = true;
                             retryCount--;
                         }
                         else
                         {
                             list.Add(new Record(k, new ByteString(r.Value), new ByteString(r.Version)));
+                            replay = false;
                         }
                     }
                 } while (replay);
