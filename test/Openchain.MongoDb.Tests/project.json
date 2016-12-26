@@ -1,29 +1,45 @@
 {
-  "version": "0.1.0-alpha1",
+  "version": "0.2.0",
   "description": "Unit tests for the Openchain.MongoDb package.",
   "authors": [ "Frédéric Luce" ],
-  "owners": [ "Frédéric Luce" ],
-  "projectUrl": "https://github.com/openchain/mongodb-storage",
-  "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
-  "iconUrl": "https://www.openchain.org/package.png",
   "copyright": "Copyright © 2016",
 
-  "dependencies": {
-    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
-    "Openchain.Abstractions.Tests": "0.5.0-*",
-    "Openchain.Infrastructure.Tests": "0.5.0-*",
-    "xunit": "2.1.0",
-    "xunit.runner.dnx": "2.1.0-rc1-*",
-    "Openchain.MongoDb": ""
+  "buildOptions": {
+    "allowUnsafe": false,
+    "warningsAsErrors": true
   },
+
+  "packOptions": {
+    "projectUrl": "https://github.com/openchain/mongodb-storage",
+    "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+    "iconUrl": "https://www.openchain.org/package.png"
+  },
+
+  "dependencies": {
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Openchain.Abstractions.Tests": "0.7.0",
+    "Openchain.Infrastructure.Tests": "0.7.0",
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Openchain.MongoDb": "0.2.0"
+  },
+
+  "testRunner": "xunit",
 
   "commands": {
     "test": "xunit.runner.dnx"
   },
 
   "frameworks": {
-    "dnx452": {
+    "netcoreapp1.5": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
+        }
+      },
+      "imports": [ "dnxcore50", "portable-net45+win8" ]
     }
   }
 }
