@@ -10,25 +10,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using Openchain.Infrastructure;
 using Openchain.Infrastructure.Tests;
 using Xunit;
-using System;
-using MongoDB.Driver;
-using Xunit;
-using System.Text;
-using Openchain.Infrastructure;
-using System.Linq;
-using System.Collections.Concurrent;
 using Xunit.Abstractions;
-using Microsoft.Extensions.Logging;
 
 namespace Openchain.MongoDb.Tests
 {
     public class Logger : ILogger
     {
-
         public ITestOutputHelper Output { get; set; }
+
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            throw new NotImplementedException();
+        }
 
         public IDisposable BeginScopeImpl(object state)
         {
@@ -40,9 +42,9 @@ namespace Openchain.MongoDb.Tests
             return logLevel >= LogLevel.Warning;
         }
 
-        public void Log(LogLevel logLevel, int eventId, object state, Exception exception, Func<object, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Output.WriteLine($"[{logLevel.ToString().ToUpper().Substring(0,4)}] {formatter(state, exception)}");
+            Output.WriteLine($"[{logLevel.ToString().ToUpper().Substring(0, 4)}] {formatter(state, exception)}");
         }
     }
 
@@ -56,7 +58,7 @@ namespace Openchain.MongoDb.Tests
         {
             Output = output;
             var logger = new Logger() { Output = output };
-                //new Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider((x, y) => y>=Microsoft.Extensions.Logging.LogLevel.Error, true).CreateLogger("Test");
+            //new Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider((x, y) => y>=Microsoft.Extensions.Logging.LogLevel.Error, true).CreateLogger("Test");
             store = new MongoDbLedger(
                             new MongoDbStorageEngineConfiguration
                             {
@@ -67,7 +69,7 @@ namespace Openchain.MongoDb.Tests
                                 StaleTransactionDelay = TimeSpan.FromMinutes(10),
                                 RunRollbackThread = true
                             }, logger);
-            store.RecordCollection.DeleteMany(x=>true);
+            store.RecordCollection.DeleteMany(x => true);
             store.TransactionCollection.DeleteMany(x => true);
             store.PendingTransactionCollection.DeleteMany(x => true);
 
@@ -91,28 +93,28 @@ namespace Openchain.MongoDb.Tests
 
             Task.WaitAll(tasks);
 
-            var b=Enumerable.Range(0, accountCount).Select(x => { var t = GetAccountBalance($"/account/p{x}/", asset); t.Wait(); return t.Result; }).ToArray();
+            var b = Enumerable.Range(0, accountCount).Select(x => { var t = GetAccountBalance($"/account/p{x}/", asset); t.Wait(); return t.Result; }).ToArray();
             for (int i = 0; i < accountCount; i++)
                 Output.WriteLine($"/account/p{i}/ => {b[i]}");
 
             Output.WriteLine("Errors : ");
             foreach (var e in cb)
-                Output.WriteLine("  "+e);
+                Output.WriteLine("  " + e);
 
             var sum = tries.Sum(x => x.Value);
 
             Output.WriteLine("Tries : ");
-            foreach (var e in tries.OrderBy(x=>x.Key))
-                Output.WriteLine($"  {e.Key,3}: {e.Value,6:0} ({e.Value*1.0/sum,8:0.00%}) { new String('=', (int)(e.Value * 100.0 / sum)) }");
+            foreach (var e in tries.OrderBy(x => x.Key))
+                Output.WriteLine($"  {e.Key,3}: {e.Value,6:0} ({e.Value * 1.0 / sum,8:0.00%}) { new String('=', (int)(e.Value * 100.0 / sum)) }");
 
-            Assert.Equal(threadCount*loopCount*transfertStringLength, sum);
+            Assert.Equal(threadCount * loopCount * transfertStringLength, sum);
 
             for (int i = 0; i < accountCount; i++)
                 Assert.Equal(0, b[i]);
 
             Assert.True(cb.IsEmpty);
 
-            Assert.Equal(0, store.PendingTransactionCollection.Count(x=>true));
+            Assert.Equal(0, store.PendingTransactionCollection.Count(x => true));
             Assert.Equal(0, store.RecordCollection.Count(Builders<MongoDbRecord>.Filter.Exists(x => x.TransactionLock)));
         }
 
@@ -127,9 +129,9 @@ namespace Openchain.MongoDb.Tests
                 for (int i = 0; i < lCount; i++)
                 {
                     var tryCount = await Transfert(
-                        $"/account/p{(i%lCount + delta) % c}/", $"/account/p{((i + 1)%lCount + delta) % c}/",
+                        $"/account/p{(i % lCount + delta) % c}/", $"/account/p{((i + 1) % lCount + delta) % c}/",
                         amount, asset, $"[{thread}] {j}/{loopCount} - {i}/{c}");
-                    if (tryCount >0)
+                    if (tryCount > 0)
                     {
                         cb.Add($"[{thread}] {j}/{loopCount} - {i}/{c} /account/p{(i + delta) % c}/ => /account/p{(i + 1 + delta) % c}/ : {tryCount}");
                     }
@@ -149,7 +151,7 @@ namespace Openchain.MongoDb.Tests
 
         ByteString LongToByteString(long amount)
         {
-            var r=BitConverter.GetBytes(amount);
+            var r = BitConverter.GetBytes(amount);
             Array.Reverse(r);
             return new ByteString(r);
         }
@@ -157,7 +159,7 @@ namespace Openchain.MongoDb.Tests
         async Task<int> Transfert(string from, string to, long amount, string asset, string prefix)
         {
             int counter = 30;
-            int tryCount=0;
+            int tryCount = 0;
             int delay = 10;
             do
             {
@@ -168,7 +170,7 @@ namespace Openchain.MongoDb.Tests
                 }
                 catch (ConcurrentMutationException e)
                 {
-                    Output.WriteLine($"{prefix} - {from} ==> {to} Failure {e.Data["ExceptionType"]??"ConcurrentMutation"} Retry : {tryCount}");
+                    Output.WriteLine($"{prefix} - {from} ==> {to} Failure {e.Data["ExceptionType"] ?? "ConcurrentMutation"} Retry : {tryCount}");
                     counter--;
                 }
                 catch (Exception e) when (e.Message.StartsWith("Lock timeout"))
@@ -179,8 +181,8 @@ namespace Openchain.MongoDb.Tests
                     counter--;
                 }
                 tryCount++;
-            } while (counter>0);
-            return counter==-1?-tryCount:tryCount;
+            } while (counter > 0);
+            return counter == -1 ? -tryCount : tryCount;
         }
 
         private async Task TransfertInternal(string from, string to, long amount, string asset)
