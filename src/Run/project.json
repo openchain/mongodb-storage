@@ -1,27 +1,38 @@
 ﻿{
-  "entryPoint": "Openchain.Server",
-
-  "dependencies": {
-    "Openchain.Server": "0.5.0-rc1",
-
-    "Openchain.MongoDb": "0.1.0-alpha1",
-    "Openchain.Validation.PermissionBased": "0.5.0-rc1",
-    "Openchain.Anchoring.Blockchain": "0.5.0-rc1"
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
   },
 
-  "userSecretsId": "Openchain.Server",
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "version": "1.1.0",
+      "type": "platform"
+    },
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.*",
+    "Openchain.Server": "0.7.0",
 
-  "commands": {
-    "start": "Microsoft.AspNet.Hosting --webroot \"Webroot\" --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:8080"
+    "Openchain.Anchoring.Blockchain": "0.7.0",
+    "Openchain.MongoDb": "0.2.0",
+    "Openchain.Validation.PermissionBased": "0.7.0"
   },
 
   "frameworks": {
-    "dnx451": { }
+    "netcoreapp1.1": {}
   },
 
-  "publishExclude": [
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ]
+  "publishOptions": {
+    "exclude": [
+      "**.xproj",
+      "**.user",
+      "**.vspscc"
+    ],
+    "include": [
+      "data"
+    ]
+  },
+
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  }
 }
